@@ -68,3 +68,4 @@ plot(simulationOutput, quantreg = TRUE)
 testDispersion(simulationOutput)
 testZeroInflation(simulationOutput)
 testOutliers(simulationOutput, type= "bootstrap")
+
