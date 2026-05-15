@@ -28,7 +28,11 @@ fit_ed <- glmmTMB(ed ~ bs(age) + sex + time
 
 summary(fit_ed)
 
-##zero inflated negative binomial
+#count outcomes
+
+
+
+
 fit_hosp <- glmmTMB(days_in_hospital ~ bs(age) + sex  +  time
                    + (1|study_id),  
                     # ziformula = ~1,          # Constant zero-inflation probability
@@ -42,6 +46,10 @@ fit_num_ed <- glmmTMB(ed_presentations ~ bs(age) + sex + time + (1|study_id),
                       family = poisson) #overdispersion p = 0.064
 
 summary(fit_num_ed)
+
+
+
+
 
 
 fit_ncmht <- glmmTMB(ncmht_contacts ~ bs(age)+ sex + time + (1|study_id), 
@@ -59,11 +67,22 @@ fit_ncmht2 <- glmmTMB(ncmht_contacts ~ bs(age) + sex + time + (1|study_id),
 
 summary(fit_ncmht2)
 
+
+##skewed & truncated?
+fit_epi <- glmmTMB(days_episodes ~ bs(age) + sex  +  time
+                   + (1|study_id),  
+                   family=gaussian,
+                   data=ambit %>% filter(days_episodes <= 250)) 
+
+
+summary(fit_epi)
+
 ##testing Poisson overdispersion and zero inflation
+#zero inflated negative binomial
 
 #https://cran.r-project.org/web/packages/DHARMa/refman/DHARMa.html#testZeroInflation
 
-simulationOutput <- simulateResiduals(fittedModel = fit_ncmht2)
+simulationOutput <- simulateResiduals(fittedModel = fit_epi)
 plot(simulationOutput, quantreg = TRUE)
 testDispersion(simulationOutput)
 testZeroInflation(simulationOutput)
